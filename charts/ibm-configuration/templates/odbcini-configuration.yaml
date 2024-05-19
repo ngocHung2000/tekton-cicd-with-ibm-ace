@@ -1,0 +1,14 @@
+{{- if .Values.odbc.enabled }}
+apiVersion: appconnect.ibm.com/v1beta1
+kind: Configuration
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-odbc
+  labels:
+    {{- include "ibm-configuration.labels" . | nindent 4 }}
+spec:
+  data: {{ .Values.odbc.data }}
+  description: {{ .Values.odbc.description | default "ODBC Configure" }}
+  secretName: {{ .Values.odbc.secretName }}
+  type: odbc
+{{- end }}

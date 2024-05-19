@@ -1,0 +1,51 @@
+barURL:
+- https://localhost:3443/api/v1/demo
+
+integrationRuntime:
+  # Defined Configuration for Integration Runtime
+  barAuth:
+    enabled: true
+    data: replace_with_barAuth
+    description: ""
+
+  license:
+    accepted: true
+    use: CloudPakForIntegrationProduction
+    license: L-UAZF-8ZYQDD
+
+  # Defined HeathCheck
+  heathcheck:
+    enabled: false
+    list:
+      livenessProbe:
+        httpGet:
+          path: /
+          port: http
+      readinessProbe:
+        httpGet:
+          path: /
+          port: http
+  # Defined Admin Secure
+  adminServerSecure:
+    enabled: false
+
+  env:
+    enabled: true
+    list:
+    - name: TZ
+      value: Asia/Ho_Chi_Minh
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80

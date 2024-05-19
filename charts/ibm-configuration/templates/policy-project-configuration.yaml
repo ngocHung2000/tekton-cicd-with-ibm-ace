@@ -1,0 +1,14 @@
+{{- if .Values.policyProject.enabled }}
+apiVersion: appconnect.ibm.com/v1beta1
+kind: Configuration
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-policyproject
+  labels:
+    {{- include "ibm-configuration.labels" . | nindent 4 }}
+spec:
+  data: {{ .Values.policyProject.data }}
+  description: {{ .Values.policyProject.description | default "Policy Configure" }}
+  secretName: {{ .Values.policyProject.secretName }}
+  type: policyproject
+{{- end }}

@@ -32,7 +32,7 @@ These are all the steps of the scenario, some done manually (1. and 2. ) , some 
 8. ACE Operator picks up the ACE configuration CRs and creates appropriate configuration and related Openshift resources (secrets, config maps,...)
 9. ACE Operator picks up the ACE integration server CR and creates ACE server and related Openshift resources (deployment, service, routes,...)
 
-![ACE pipeline](https://github.com/isalkovic/ACE_Tekton_Operators-documentation/blob/main/images/ACE_Tekton_Pipeline.drawio.png?raw=true)
+![alt text](images/architecture.png)
 
 This document is a (functional) work in progress and will continue to be improved along with the code which is located here: https://github.com/isalkovic/ACE_Tekton_Operators
 
@@ -151,8 +151,8 @@ Select "maven2(hosted)" as type and proceed to give your repo a name - we will r
 Under Hosted->"Deployment policy" change default to “Allow redeploy”. This will make it easier to run the demo - you will be allowed to upload the same bar more than once (which can happen if you do not change the code between builds/deploys). Also, set the “Layout policy” to “Permissive” - this will make Nexus more flexible towards the path that you choose for the upload of your bar file - for demo it is fine like this.
 
 8. **Create a new Persistent Volume Claim (PVC)** on your Openshift cluster. PVC is required by the pipeline, since this pipeline needs to exchange data between different pipeline Tasks.  
- Select appropriate storage class, for size put 1GiB and give it a name of your choice - we will reference it as $PVCNAME - while leaving other parameters default.  
- Click the button “Create” and make sure that the status of your PVC is “Bound”.  
+Select appropriate storage class, for size put 1GiB and give it a name of your choice - we will reference it as $PVCNAME - while leaving other parameters default.  
+Click the button “Create” and make sure that the status of your PVC is “Bound”.  
 
 Note:: I have noticed different behaviour of the pipeline, depending on the Storage class being used for the PVC. Depending on what you select, it is possible that your pipeline Tasks will run into problems with file permissions.  
 I can confirm that there were no issues with *OCS provided Filesystem volume* and thin vmware storage classes on my local cluster and with *ibmc-file-bronze-gid* storage class, when using ROKS on IBM Cloud.
@@ -169,11 +169,11 @@ oc project $PROJECT
 
 11. Another requirement of the pipeline (ace-build-bar Task) is to **have an appropriate container image, which is suitable to run “ibm int” commands**, which we need to execute in order to build the code generated in ACE Toolkit.  
 Inside the git repo you have cloned previously, there is a folder named 'ace-minimal-image'.  
-Using the Dockerfile.aceminimalubuntu dockerfile, build a new image and tag it for your Openshift registry (  Make sure that the registry is exposed and that you note it’s exposed URL as $IMAGEREPOSITORY ) , and push it to your registry:  
+Using the Dockerfile.aceminimalubuntu dockerfile, build a new image and tag it for your Openshift registry (Make sure that the registry is exposed and that you note it’s exposed URL as $IMAGEREPOSITORY ) , and push it to your registry:  
 
 ```
- docker build -t ace-with-zip -f Dockerfile.aceminimalubuntu .
- docker tag acewithzip $IMAGEREPOSITORY/$PROJECT/ace-with-zip:latest  
+docker build -t ace-with-zip -f Dockerfile.aceminimalubuntu .
+docker tag acewithzip $IMAGEREPOSITORY/$PROJECT/ace-with-zip:latest  
 docker push $IMAGEREPOSITORY/$PROJECT/ace-with-zip:latest  
 ```
 
@@ -222,7 +222,7 @@ Finally you have set-up your environment and we can start running some ACE pipel
 
 <img src="https://github.com/isalkovic/ACE_Tekton_Operators-documentation/blob/main/images/pipeline-run.png?raw=true" width="800">  
 
- Click "Rerun", cross your fingers and hope that everything was set up correctly.
+Click "Rerun", cross your fingers and hope that everything was set up correctly.
 
 If you would like, you can track the execution of your pipeline (steps progression and step logs) by clicking on the name of your new pipeline run (it should be in “Running” status).  
 
@@ -299,7 +299,7 @@ On the "NexusRepo" tab, click the button "Create NexusRepo". Change the name if 
 
 ---  
 
-6. Since we want to access our Nexus repository from outside the cluster, we need to **expose it, using a route **. In the Openshift console, go to Networking->Routes and click on the "Create route" button . Give this route a name of your choice, select the nexus service under “Service” and select the only available Target port (should be 8081) . Click the “Create” button to create a new route.  
+6. Since we want to access our Nexus repository from outside the cluster, we need to **expose it, using a route**. In the Openshift console, go to Networking->Routes and click on the "Create route" button. Give this route a name of your choice, select the nexus service under “Service” and select the only available Target port (should be 8081). Click the “Create” button to create a new route.  
 
 <img src="https://github.com/isalkovic/ACE_Tekton_Operators-documentation/blob/main/images/nexus-route.png?raw=true" width="600">
 
@@ -317,9 +317,9 @@ On the bottom, click the “Create Repository” button.
 
 ---  
 
-8. Before proceeding to create the pipeline and pipeline elements, first you will need to **define a Persistent Volume Claim (PVC)** on your Openshift cluster. PVC is required by the pipeline, since this pipeline needs to exchange data between different pipeline Tasks - i.e. after you clone the repository and it’s files, they are later used in another Task to build the .bar file). To do this, we need persistent storage, since each pipeline Task runs as a separate container instance and as such is ephemeral.  Make sure that you are in the project which you have created earlier - $PROJECT. 
-In the Openshift console, go to Storage->PersistentVolumeClaims and click on the button “Create PersistentVolumeClaim”. Select appropriate storage class, for size put 1GiB and give it a name of your choice - we will reference it as $PVCNAME - while leaving other parameters default.  
- Click the button “Create” and make sure that the status of your PVC is “Bound” (it could take a minute sometimes).  
+8. Before proceeding to create the pipeline and pipeline elements, first you will need to **define a Persistent Volume Claim (PVC)** on your Openshift cluster. PVC is required by the pipeline, since this pipeline needs to exchange data between different pipeline Tasks - i.e. after you clone the repository and it’s files, they are later used in another Task to build the .bar file). To do this, we need persistent storage, since each pipeline Task runs as a separate container instance and as such is ephemeral. Make sure that you are in the project which you have created earlier - $PROJECT.
+In the Openshift console, go to Storage->PersistentVolumeClaims and click on the button “Create PersistentVolumeClaim”.Select appropriate storage class, for size put 1GiB and give it a name of your choice - we will reference it as $PVCNAME - while leaving other parameters default.  
+Click the button “Create” and make sure that the status of your PVC is “Bound” (it could take a minute sometimes).  
 
 <img src="https://github.com/isalkovic/ACE_Tekton_Operators-documentation/blob/main/images/PVC.png?raw=true" width="600">  
 
@@ -338,7 +338,7 @@ Once there, in the top-right corner of the screen click on the "Fork" button - t
 
 Make a note of your new repository URL - we will continue to reference it as $YOURGITREPOURL  
 
-As the next step, clone this forked repo - in your command prompt, enter:   
+As the next step, clone this forked repo - in your command prompt, enter:  
 ```
 git clone $YOURGITREPOURL
 ```  
@@ -372,22 +372,22 @@ We want this image to be as small and light as possible, but IBM does not provid
 OK, so how will we do this?  
 Using the *Dockerfile.aceminimalubuntu* dockerfile, **build a new image** (for this you will need to have either docker or alternative CLI installed on your machine):  
 ```
- docker build -t ace-with-zip -f Dockerfile.aceminimalubuntu .
+docker build -t ace-with-zip -f Dockerfile.aceminimalubuntu .
 ```
   After building the image, **tag it with an appropriate tag**, so that you can push the image to your Openshift image registry:  
 ```
- docker tag acewithzip $IMAGEREPOSITORY/$PROJECT/ace-with-zip:latest  
+docker tag acewithzip $IMAGEREPOSITORY/$PROJECT/ace-with-zip:latest  
 ```
-  Next, we need to tag and **push our image to the internal Openshift registry**.  
+Next, we need to tag and **push our image to the internal Openshift registry**.  
 
-  First, we need to make sure that the registry is exposed and that we know it’s exposed address.  You can check if your registry is exposed if there is a registry route in the project *openshift-image-registry*. Make a note of that route and we will continue to reference it as $IMAGEREPOSITORY     
+  First, we need to make sure that the registry is exposed and that we know it’s exposed address. You can check if your registry is exposed if there is a registry route in the project *openshift-image-registry*. Make a note of that route and we will continue to reference it as $IMAGEREPOSITORY     
 If your Openshift registry is not exposed, you first have to expose it using the following oc command:  
 ```
 oc patch configs.imageregistry.operator.openshift.io/cluster --patch '{"spec":{"defaultRoute":true}}' --type=merge  
 ```  
 
 Again, make a note of the new route which was created.  
- Next,  you need to login to your Openshift registry:
+Next,  you need to login to your Openshift registry:
 ```
 docker login -u openshift -p $(oc whoami -t) $IMAGEREPOSITORY  
 ```
@@ -403,7 +403,7 @@ CHEAT SHEET FOR PODMAN ALTERNATIVE::
 podman login -u openshift -p $(oc whoami -t) --tls-verify=false $IMAGEREPOSITORY  
 podman build -t ace-with-zip -f Dockerfile.aceminimalubuntu .  
 podman tag ace-with-zip $IMAGEREPOSITORY/$PROJECT/ace-with-zip:latest  
-podman push --tls-verify=false $IMAGEREPOSITORY/$PROJECT/ace-with-zip:latest 
+podman push --tls-verify=false $IMAGEREPOSITORY/$PROJECT/ace-with-zip:latest
 ```  
 
 ---  
@@ -430,11 +430,11 @@ oc apply -f pipelineElementName.yaml
 ```
 where you change the name of the YAML file, for each of the files in the pipeline directory.  
 
-  As an alternative to running oc commands, you can do the same thing through the Openshift console. In the top-right corner of the console UI, click on the “+” (import YAML) button, and paste the contents of the yaml file.  
+As an alternative to running oc commands, you can do the same thing through the Openshift console. In the top-right corner of the console UI, click on the “+” (import YAML) button, and paste the contents of the yaml file.  
 
 <img src="https://github.com/isalkovic/ACE_Tekton_Operators-documentation/blob/main/images/ocimportyaml.png?raw=true" width="300">
 
-Click “Create” button to apply the pipeline element.  Do this for all the files in the pipeline directory.  
+Click “Create” button to apply the pipeline element. Do this for all the files in the pipeline directory.  
 
 ---  
 

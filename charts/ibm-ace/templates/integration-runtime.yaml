@@ -1,0 +1,43 @@
+apiVersion: appconnect.ibm.com/v1beta1
+kind: IntegrationRuntime
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}
+  labels:
+    {{- include "ibm-ace.labels" . | nindent 4 }}
+spec:
+  enableMetrics: true
+  license:
+    accept: {{ .Values.integrationRuntime.license.accepted }}
+    license: {{ .Values.integrationRuntime.license.license }}
+    use: {{ .Values.integrationRuntime.license.use }}
+  pod:
+    containers:
+      runtime:
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+    {{- if .Values.integrationRuntime.heathcheck.enabled }}
+      {{- toYaml .Values.integrationRuntime.heathcheck.list | nindent 6 }}
+    {{- end}}
+  adminServerSecure: {{ .Values.integrationRuntime.adminServerSecure.enabled }}
+  router:
+    timeout: 120s
+  {{- if .Values.integrationRuntime.env.enabled }}
+  env:
+    {{- toYaml .Values.integrationRuntime.env.list | nindent 4}}
+  {{- end }}
+  designerFlowsOperationMode: disabled
+  createDashboardUsers: true
+  service:
+    endpointType: http
+  version: {{ .Values.integrationRuntime.integrationVersion }}
+  logFormat: basic
+  {{- if not .Values.autoscaling.enabled  }}
+  replicas: {{ .Values.replicaCount | default 1 }}
+  {{- end }}
+  {{- with .Values.barURL }}
+  barURL:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  configuration:
+  

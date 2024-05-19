@@ -1,0 +1,14 @@
+{{- if .Values.serverconf.enabled }}
+apiVersion: appconnect.ibm.com/v1beta1
+kind: Configuration
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-serverconf
+  labels:
+    {{- include "ibm-configuration.labels" . | nindent 4 }}
+spec:
+  data: {{ .Values.serverconf.data }}
+  description: {{ .Values.serverconf.description | default "ServerConf Configure" }}
+  secretName: {{ .Values.serverconf.secretName }}
+  type: serverconf
+{{- end }}

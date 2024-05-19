@@ -1,0 +1,35 @@
+# Defined Configuration for Integration Runtime
+barAuth:
+  enabled: true
+  data: replace_with_barAuth
+  description: ""
+
+generic:
+  enabled: true
+  data: replace_with_barAuth
+  description: ""
+  secretName: replace_with_generic_secret_name
+
+odbc:
+  enabled: true
+  data: replace_with_odbc
+  description: ""
+  secretName: replace_with_odbc_secret_name
+
+policyProject:
+  enabled: true
+  data: replace_with_policyProject
+  description: ""
+  secretName: replace_with_policyProject_secret_name
+
+serverconf:
+  enabled: true
+  data: replace_with_serverconf
+  description: ""
+  secretName: replace_with_serverconf_secret_name
+
+setdbparms:
+  enabled: true
+  data: replace_with_setdbparms
+  description: ""
+  secretName: replace_with_setdbparms_secret_name

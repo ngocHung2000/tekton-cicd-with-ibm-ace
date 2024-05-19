@@ -1,0 +1,14 @@
+{{- if .Values.generic.enabled }}
+apiVersion: appconnect.ibm.com/v1beta1
+kind: Configuration
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-generic
+  labels:
+    {{- include "ibm-configuration.labels" . | nindent 4 }}
+spec:
+  data: {{ .Values.generic.data }}
+  description: {{ .Values.generic.description | default "Generic Configure" }}
+  secretName: {{ .Values.generic.secretName }}
+  type: generic
+{{- end }}

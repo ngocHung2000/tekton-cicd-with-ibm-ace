@@ -1,0 +1,13 @@
+{{- if .Values.barAuth.enabled }}
+apiVersion: appconnect.ibm.com/v1beta1
+kind: Configuration
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-barauth
+  labels:
+    {{- include "ibm-configuration.labels" . | nindent 4 }}
+spec:
+  data: {{ .Values.barAuth.data }}
+  description: {{ .Values.barAuth.description | default "BarAuth Configure" }}
+  type: barauth
+{{- end }}

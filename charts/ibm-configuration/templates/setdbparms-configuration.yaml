@@ -1,0 +1,13 @@
+{{- if .Values.setdbparms.enabled }}
+apiVersion: appconnect.ibm.com/v1beta1
+kind: Configuration
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ .Release.Name }}-setdbparms
+  labels:
+    {{- include "ibm-configuration.labels" . | nindent 4 }}
+spec:
+  data: {{ .Values.setdbparms.data }}
+  description: {{ .Values.setdbparms.description | default "SetDBParms Configure" }}
+  type: setdbparms
+{{- end }}
